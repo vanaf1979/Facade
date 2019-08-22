@@ -1,0 +1,32 @@
+{
+    "name": "vanaf1979/functionsphp",
+    "description": "Service based functions php boilerplate",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Stephan",
+            "email": "vanaf1979@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Theme\\": ""
+        }
+    },
+    "require": {
+        "facade/facade": "@dev"
+    },
+    "require-dev": {
+        
+    },
+    "repositories": {
+        "dev-package": {
+          "type": "path",
+          "url": "core/",
+          "options": {
+            "symlink": true
+          }
+        }
+      }
+}
