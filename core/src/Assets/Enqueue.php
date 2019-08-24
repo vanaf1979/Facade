@@ -43,19 +43,24 @@ class Enqueue {
      * 
      * @return void
      */
-    public function styles( array $asset = null ) : void {
+    public function styles( array $assets = null ) : void {
 
-        if( $this->is_style_handle_unique( $asset['handle'] ) and $this->does_asset_exist( $asset['file'] ) ) {
+        foreach( $assets as $asset ) {
 
-            \wp_enqueue_style(
-                $asset['handle'],
-                $asset['src'],
-                $asset['deps'],
-                $asset['ver'],
-                $asset['media']
-            );
+            if( $this->is_style_handle_unique( $asset['handle'] ) and $this->does_asset_exist( $asset['src'] ) ) {
 
+                \wp_enqueue_style(
+                    $asset['handle'],
+                    $asset['src'],
+                    $asset['deps'],
+                    $asset['ver'],
+                    $asset['media']
+                );
+    
+            }
+            
         }
+        
         
     }
 
