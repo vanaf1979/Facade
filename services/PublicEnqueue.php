@@ -12,14 +12,21 @@ namespace Theme\Services;
 use Facade\Service;
 use Facade\Registerable;
 use Facade\Conditional;
+use Facade\Assets\Enqueue;
 
 
 final class PublicEnqueue implements Service, Registerable, Conditional {
 
+    private $enqueue = null;
+
     /**
      * the constructor.
      */
-    public function __construct( ) { }
+    public function __construct( Enqueue $enqueue ) { 
+
+        $this->enqueue = new $enqueue;
+
+    }
 
 
     /**
@@ -60,13 +67,15 @@ final class PublicEnqueue implements Service, Registerable, Conditional {
      */
     public function enqueue_styles() : void {
 
-        \wp_enqueue_style( 
-            $this->theme->textdomain  . '-app',
-            $this->theme->path . '/style.css',
-            array(),
-            $this->theme->version,
-            'all'
-        );
+        $this->enqueue->styles( array(
+            array(
+                'handle' => $this->theme->textdomain  . '-app',
+                'src' => $this->theme->path . '/style.css',
+                'deps' => array(),
+                'ver' => '1.0.0',
+                'media' => 'all'
+            )
+        ));
 
     }
 
