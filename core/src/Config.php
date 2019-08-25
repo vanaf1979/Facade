@@ -37,6 +37,10 @@ class Config {
     public function get_definitions(): array {
 
         return [
+            WP_Scripts => \DI\object( function(){
+                global $wp_scripts;
+                return $wp_scripts;
+            }),
             // FunctionsPhp\Dependencies\Theme::class => \DI\factory('FunctionsPhp\Dependencies\Theme::instance'),
         ];
 

@@ -4,7 +4,6 @@
  * 
  * Css and Javascript loader class.
  * 
- * 
  * @author Stephan Nijman <vanaf1979@gmail.com>
  *
  * @package    Facade
@@ -12,6 +11,8 @@
  */
 
 namespace Facade\Assets;
+
+use \WP_Scripts;
 
 
 class Enqueue {
@@ -23,7 +24,7 @@ class Enqueue {
      */
     private $deferables = null;
 
-    
+
     /**
      * csspath.
      *
@@ -43,7 +44,11 @@ class Enqueue {
     /**
      * the constructor.
      */
-    public function __construct( ) { }
+    public function __construct( WP_Scripts $scripts ) { 
+
+        $this->scripts = $scripts;
+
+    }
 
 
     /**
@@ -57,7 +62,7 @@ class Enqueue {
      * 
      * @return void
      */
-    public function styles( array $assets = null ) : void {
+    public function styles( array $assets ) : void {
 
         foreach( $assets as $asset ) {
 
@@ -74,8 +79,7 @@ class Enqueue {
             }
             
         }
-        
-        
+           
     }
 
 
@@ -90,7 +94,7 @@ class Enqueue {
      * 
      * @return bool
      */
-    private function is_style_handle_unique( $name ) : bool {
+    private function is_style_handle_unique( string $name ) : bool {
         
         global $wp_scripts;
 
