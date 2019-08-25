@@ -17,12 +17,26 @@ namespace Facade\Assets;
 class Enqueue {
 
     /**
-     * An array of assets to defer.
+     * deferables.
+     *
+     * @var string $deferables An array of assets to defer.
      */
     private $deferables = null;
 
+    
+    /**
+     * csspath.
+     *
+     * @var string $csspath path to css files.
+     */
     private $csspath = 'public/css';
 
+
+    /**
+     * jspath.
+     *
+     * @var string $jspath path to js files.
+     */
     private $jspath = 'public/js';
 
 
