@@ -13,40 +13,41 @@
 namespace Facade\Assets;
 
 use \WP_Scripts;
+use Facade\Assets\EnqueueApi;
 
 
 class Enqueue {
 
     /**
-     * deferables.
+     * enqueue_api.
      *
-     * @var string $deferables An array of assets to defer.
+     * @var EnqueueApi $enqueue_api enqueue api instance.
      */
-    private $deferables = null;
-
+    private $enqueue_api = null;
 
     /**
-     * csspath.
+     * style_asset_defaults.
      *
-     * @var string $csspath path to css files.
+     * @var array $style_asset_defaults default array for a asset.
      */
-    private $csspath = 'public/css';
-
-
-    /**
-     * jspath.
-     *
-     * @var string $jspath path to js files.
-     */
-    private $jspath = 'public/js';
+    private $style_asset_defaults = array(
+        'handle' => null,
+        'src' => null,
+        'deps' => array(),
+        'ver' => '1.0.0',
+        'media' => 'screen',
+        'defer' => false,
+        'async' => false,
+        'condition' => null
+    );
 
 
     /**
      * the constructor.
      */
-    public function __construct( WP_Scripts $scripts ) { 
+    public function __construct( ) { 
 
-        $this->scripts = $scripts;
+        $this->enqueue_api = new EnquuueApi();
 
     }
 
@@ -66,9 +67,11 @@ class Enqueue {
 
         foreach( $assets as $asset ) {
 
-            if( $this->is_style_handle_unique( $asset['handle'] ) and $this->does_asset_exist( $asset['src'] ) ) {
+            $asset = $this->complete_style_asset( $asset );
 
-                \wp_enqueue_style(
+            if( $this->enqueue_api->is_style_handle_unique( $asset['handle'] ) and $this->does_asset_exist( $asset['src'] ) ) {
+
+                $this->enqueue_api->style(
                     $asset['handle'],
                     $asset['src'],
                     $asset['deps'],
@@ -84,28 +87,19 @@ class Enqueue {
 
 
     /**
-     * is_style_handle_unique.
+     * complete_style_asset.
      *
-     * Check if the asset handle is unique.
+     * Complete the asset with style asset defaults.
      *
-     * @uses isset https://www.php.net/manual/en/function.isset.php
+     * @uses array_merge https://www.php.net/manual/en/function.array-merge.php
      * 
-     * @param string $name asset handle.
+     * @param array $asset asset data.
      * 
-     * @return bool
+     * @return array
      */
-    private function is_style_handle_unique( string $name ) : bool {
-        
-        global $wp_scripts;
+    private function complete_style_asset( array $asset ) : array {
 
-        if( ! isset( $wp_scripts->registered[ $name ] ) ) {
-
-            return true;
-
-        } else {
-            
-            throw new \Exception( "Class Enqueue: Asset handle {$name} already exists." );
-        }
+        return \array_merge( $this->style_asset_defaults , $asset ) ;
 
     }
 
