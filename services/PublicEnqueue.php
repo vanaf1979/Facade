@@ -69,11 +69,12 @@ final class PublicEnqueue implements Service, Registerable, Conditional {
 
         $this->enqueue->styles( array(
             array(
-                'handle' => $this->theme->textdomain  . '-app',
+                'handle' => '-app',
                 'src' => $this->theme->path . '/style.css',
                 'deps' => array(),
                 'ver' => '1.0.0',
-                'media' => 'all'
+                'media' => 'all',
+                'condition' => 'lt IE 9'
             )
         ));
 
