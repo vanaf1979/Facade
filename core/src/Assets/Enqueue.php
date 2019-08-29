@@ -85,10 +85,10 @@ class Enqueue {
             $scriptasset = new ScriptAsset( $asset );
             $scriptasset->enqueue();
 
-        }
+            $this->check_async_defer( $asset );
 
-        $this->check_async_defer( $asset );
-           
+        }
+        
     }
 
 
