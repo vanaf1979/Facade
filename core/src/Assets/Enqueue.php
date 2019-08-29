@@ -88,7 +88,7 @@ class Enqueue {
             $this->check_async_defer( $asset );
 
         }
-        
+
     }
 
 
@@ -141,27 +141,11 @@ class Enqueue {
 
         $addition = '';
 
-        if( in_array( $handle , $this->asyncables ) ) {
+        $addition .= \in_array( $handle , $this->asyncables ) ? 'async ' : '';
 
-            $addition .= 'async ';
-            
-        }
+        $addition .= \in_array( $handle , $this->deferables ) ? 'defer ' : '';
 
-        if( in_array( $handle , $this->deferables ) ) {
-
-            $addition .= 'defer ';
-
-        }
-
-        if( $addition > '' ) {
-
-            return str_replace( "src='" , $addition . "src='" , $tag );
-
-        } else {
-
-            return $tag;
-
-        }
+        return $addition > '' ? \str_replace( "src='" , $addition . "src='" , $tag ) : $tag;
 
     }
 
