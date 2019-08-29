@@ -107,8 +107,7 @@ class Enqueue {
 
         if( ( $asset['async'] || $asset['defer'] ) && ! $this->hooked ) {
             
-            \add_filter( 'script_loader_tag' , array( $this , 'async_defer_scripts') , 10 , 2 );
-            $this->hooked = true;
+            $this->hooked = \add_filter( 'script_loader_tag' , array( $this , 'async_defer_scripts' ) , 10 , 2 );
 
         }
 
