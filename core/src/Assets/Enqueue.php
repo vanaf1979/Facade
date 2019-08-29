@@ -13,18 +13,39 @@
 namespace Facade\Assets;
 
 use Facade\Assets\StyleAsset;
-
+use Facade\Assets\ScriptAsset;
 
 class Enqueue {
+
+
+    /**
+     * deferables.
+     *
+     * @var array list of script to defer.
+     */
+    public static $deferables = array();
+
+
+    /**
+     * asyncables.
+     *
+     * @var array list of script to async.
+     */
+    public static $asyncables = array();
+
+
+    /**
+     * hooked.
+     *
+     * @var array is this class hooked.
+     */
+    public static $hooked = false;
 
     
     /**
      * the constructor.
      */
-    public function __construct( ) { 
-
-
-    }
+    public function __construct( ) { }
 
 
     /**
@@ -45,6 +66,103 @@ class Enqueue {
 
         }
            
+    }
+
+
+    /**
+     * scripts.
+     *
+     * Enqueue javascripts.
+     * 
+     * @param array $asset asset data.
+     * 
+     * @return void
+     */
+    public function scripts( array $assets ) : void {
+
+        foreach( $assets as $asset ) {
+
+            $scriptasset = new ScriptAsset( $asset );
+            $scriptasset->enqueue();
+
+        }
+
+        $this->check_async_defer( $asset );
+           
+    }
+
+
+    /**
+     * check_async_defer.
+     *
+     * Check is asset needs to be asynced or defered.
+     * 
+     * @uses add_filter https://developer.wordpress.org/reference/functions/add_filter/
+     * 
+     * @param array $asset asset data.
+     * 
+     * @return void
+     */
+    private function check_async_defer( array $asset ) : void {
+
+        if( ( $asset['async'] || $asset['defer'] ) && ! $this->hooked ) {
+            
+            \add_filter( 'script_loader_tag' , array( $this , 'async_defer_scripts') , 10 , 2 );
+            $this->hooked = true;
+
+        }
+
+        if( $asset['async'] ) {
+
+            $this->asyncables[] = $asset['handle'];
+
+        }
+
+        if( $asset['defer'] ) {
+
+            $this->deferables[] = $asset['handle'];
+
+        }
+        
+    }
+
+
+    /**
+     * async_defer_scripts.
+     *
+     * Add async/defer to script tag if needed.
+     * 
+     * @param string $tag the original script tag.
+     * @param string $handle the script name.
+     * 
+     * @return void
+     */
+    public function async_defer_scripts( string $tag , string $handle ) : string {
+
+        $addition = '';
+
+        if( in_array( $handle , $this->asyncables ) ) {
+
+            $addition .= 'async ';
+            
+        }
+
+        if( in_array( $handle , $this->deferables ) ) {
+
+            $addition .= 'defer ';
+
+        }
+
+        if( $addition > '' ) {
+
+            return str_replace( "src='" , $addition . "src='" , $tag );
+
+        } else {
+
+            return $tag;
+            
+        }
+
     }
 
 }

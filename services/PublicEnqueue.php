@@ -90,13 +90,17 @@ final class PublicEnqueue implements Service, Registerable, Conditional {
      */
     public function enqueue_scripts() : void {
 
-        \wp_enqueue_script(
-            $this->theme->textdomain  . '-app',
-            $this->theme->path . '/style.css',
-            array(),
-            $this->theme->version,
-            'all'
-        );
+        $this->enqueue->scripts( array(
+            array(
+                'handle' => '-scripts',
+                'src' => $this->theme->path . '/script.js',
+                'deps' => array(),
+                'ver' => '1.0.0',
+                'async' => true,
+                'defer' => true,
+                'condition' => 'lt IE 9'
+            )
+        ));
 
     }
 
