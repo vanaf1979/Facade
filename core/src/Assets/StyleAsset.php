@@ -231,7 +231,11 @@ class StyleAsset {
      */
     private function get_asset_version() : string {
 
-        if( ! \filter_var( $file , FILTER_VALIDATE_URL ) and ! $this->data['ver'] ) {
+        if( \filter_var( $this->data['src'] , FILTER_VALIDATE_URL ) ) {
+            
+            return '';
+
+        } else if( ! $this->data['ver'] ) {
 
             return \wp_get_theme()->get( 'Version' );
 

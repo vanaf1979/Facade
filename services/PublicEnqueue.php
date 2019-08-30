@@ -69,8 +69,16 @@ final class PublicEnqueue implements Service, Registerable, Conditional {
 
         $this->enqueue->styles( array(
             array(
-                'handle' => 'app',
+                'handle' => 'style',
                 'src' => 'style.css',
+                'deps' => array(),
+                'ver' => '1.0.0',
+                'media' => 'all',
+                'condition' => 'lt IE 9'
+            ),
+            array(
+                'handle' => 'app',
+                'src' => 'http://iwb.granmedia.nl/wp-includes/css/dist/block-library/style.min.css?ver=5.2.2',
                 'deps' => array(),
                 'ver' => '1.0.0',
                 'media' => 'all',
