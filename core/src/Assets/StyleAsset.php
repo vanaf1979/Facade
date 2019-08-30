@@ -51,7 +51,7 @@ class StyleAsset {
 
         $this->data = $this->merge_defaults( $data );
 
-        $this->validate_asset( );
+        $this->validate_asset();
         
     }
 
@@ -65,13 +65,13 @@ class StyleAsset {
      * 
      * @return void
      */
-    public function enqueue( ) : void { 
+    public function enqueue() : void { 
 
         \wp_enqueue_style(
-            $this->data['handle'],
-            \get_template_directory_uri() . $this->data['src'],
+            $this->get_namespaced_asset_handle(),
+            $this->get_asset_url(),
             $this->data['deps'],
-            $this->data['ver'],
+            $this->get_asset_version(),
             $this->data['media']
         );
 
@@ -96,7 +96,7 @@ class StyleAsset {
     private function add_condition() : void {
 
         \wp_style_add_data(
-            $this->data['handle'],
+            $this->get_namespaced_asset_handle(),
             'conditional',
             $this->data['condition']
         );
@@ -128,10 +128,11 @@ class StyleAsset {
      * Check asset data for erros.
      * 
      * @uses is_string https://www.php.net/manual/en/function.is-string.php
+     * @uses is_array https://www.php.net/manual/en/function.is-array.php
      * 
      * @return void
      */
-    private function validate_asset( ) : bool {
+    private function validate_asset() : bool {
 
         if( ! $this->data['handle'] ) {
 
@@ -154,6 +155,18 @@ class StyleAsset {
         if( ! $this->stylesheet_exists( $this->data['src'] ) ) {
 
             throw new \Exception("Assets: Local stylesheet '{$this->data['src']}' does not exist.");
+
+        }
+
+        if( isset( $this->data['deps'] ) and ! is_array( $this->data['deps'] ) ) {
+
+            throw new \Exception("Assets: Dependencies is not of type array.");
+
+        }
+
+        if( isset( $this->data['ver'] ) and ! is_string( $this->data['ver'] ) ) {
+
+            throw new \Exception("Assets: Version is not of type string.");
 
         }
 
@@ -183,7 +196,7 @@ class StyleAsset {
         
         global $wp_styles;
 
-        return ! isset( $wp_styles->registered[ $name ] ) ? true : false;
+        return ! isset( $wp_styles->registered[ $this->get_namespaced_asset_handle() ] ) ? true : false;
 
     }
 
@@ -202,8 +215,89 @@ class StyleAsset {
      */
     private function stylesheet_exists( string $file ) : bool {
 
-        return \filter_var( $file , FILTER_VALIDATE_URL ) || \file_exists( \get_template_directory() . $file ) ? true : false;
+        return \filter_var( $file , FILTER_VALIDATE_URL ) || \file_exists( $this->get_asset_path() ) ? true : false;
 
+    }
+
+    /**
+     * get_asset_handle.
+     *
+     * Get the handle for the asset.
+     * 
+     * @uses filter_var https://www.php.net/manual/en/function.filter-var.php
+     * @uses wp_get_theme https://developer.wordpress.org/reference/functions/wp_get_theme/
+     * 
+     * @return string
+     */
+    private function get_asset_version() : string {
+
+        if( ! \filter_var( $file , FILTER_VALIDATE_URL ) and ! $this->data['ver'] ) {
+
+            return \wp_get_theme()->get( 'Version' );
+
+        } else {
+
+            return $this->data['ver'];
+
+        }
+
+    }
+
+
+    /**
+     * get_asset_handle.
+     *
+     * Get the handle for the asset.
+     * 
+     * @uses wp_get_theme https://developer.wordpress.org/reference/functions/wp_get_theme/
+     * 
+     * @return string
+     */
+    private function get_namespaced_asset_handle() : string {
+
+        return \wp_get_theme()->get( 'TextDomain' ) . '-' . $this->data['handle'];
+
+    }
+
+
+    /**
+     * get_asset_url.
+     *
+     * return full url for asset.
+     * 
+     * @uses filter_var https://www.php.net/manual/en/function.filter-var.php
+     * @uses get_template_directory_uri https://developer.wordpress.org/reference/functions/get_template_directory_uri/
+     * 
+     * @return string
+     */
+    private function get_asset_url() : string {
+
+        if( \filter_var( $this->data['src'] , FILTER_VALIDATE_URL ) ) {
+
+            return $this->data['src'];
+        
+        } else {
+
+            return \get_template_directory_uri() . $this->data['src'];
+
+        }
+        
+    }
+
+
+    /**
+     * get_asset_path.
+     *
+     * return full path to asset.
+     * 
+     * @uses get_template_directory https://developer.wordpress.org/reference/functions/get_template_directory/
+     * 
+     * @return string
+     */
+    private function get_asset_path() : string {
+
+        return \get_template_directory() . DIRECTORY_SEPARATOR . $this->data['src'];
+        
     }
 
 }

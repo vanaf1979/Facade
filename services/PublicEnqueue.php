@@ -69,8 +69,8 @@ final class PublicEnqueue implements Service, Registerable, Conditional {
 
         $this->enqueue->styles( array(
             array(
-                'handle' => '-app',
-                'src' => $this->theme->path . '/style.css',
+                'handle' => 'app',
+                'src' => 'style.css',
                 'deps' => array(),
                 'ver' => '1.0.0',
                 'media' => 'all',
@@ -92,10 +92,11 @@ final class PublicEnqueue implements Service, Registerable, Conditional {
 
         $this->enqueue->scripts( array(
             array(
-                'handle' => '-scripts',
-                'src' => $this->theme->path . '/script.js',
+                'handle' => 'scripts',
+                'src' => '/script.js',
                 'deps' => array(),
                 'ver' => '1.0.0',
+                'in_footer' => true,
                 'async' => true,
                 'defer' => true,
                 'condition' => 'lt IE 9'

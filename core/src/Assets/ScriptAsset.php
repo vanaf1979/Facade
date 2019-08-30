@@ -35,6 +35,7 @@ class ScriptAsset {
         'src' => null,
         'deps' => array(),
         'ver' => null,
+        'in_footer' => true,
         'defer' => false,
         'async' => false,
         'condition' => null
@@ -73,7 +74,7 @@ class ScriptAsset {
             \get_template_directory_uri() . $this->data['src'],
             $this->data['deps'],
             $this->data['ver'],
-            $this->data['media']
+            $this->data['in_footer']
         );
 
         if( $this->data['condition'] ) {
