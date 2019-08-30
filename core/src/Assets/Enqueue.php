@@ -37,7 +37,7 @@ class Enqueue {
     /**
      * hooked.
      *
-     * @var array is this class hooked.
+     * @var bool is this class hooked.
      */
     public static $hooked = false;
 
